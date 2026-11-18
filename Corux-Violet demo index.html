@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#101711">
+  <title>BLOCK HUB — Violet Edition</title>
+  <style>
+    :root {
+      --bg: #100b19;
+      --panel: #1b1428;
+      --panel2: #281b3a;
+      --green: #b58cff;
+      --green2: #e0c5ff;
+      --text: #f2fff3;
+      --muted: #9aafa0;
+      --line: rgba(224,197,255,.14);
+    }
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0; color: var(--text); background:
+        radial-gradient(circle at 15% 0%, rgba(151,91,224,.22), transparent 32rem),
+        radial-gradient(circle at 95% 20%, rgba(111,69,163,.16), transparent 28rem), var(--bg);
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, Segoe UI, sans-serif;
+      min-height: 100vh; overflow-x: hidden;
+    }
+    a { color: inherit; text-decoration: none; }
+    .topbar {
+      position: sticky; top: 0; z-index: 10; backdrop-filter: blur(16px);
+      background: rgba(12,18,14,.78); border-bottom: 1px solid var(--line);
+    }
+    .nav {
+      width: min(1120px, calc(100% - 36px)); margin: auto; height: 72px;
+      display: flex; align-items: center; justify-content: space-between; gap: 18px;
+    }
+    .brand { display: flex; align-items: center; gap: 11px; font-weight: 900; letter-spacing: .08em; }
+    .brand-icon {
+      width: 38px; height: 38px; display: grid; place-items: center; border-radius: 11px;
+      background: linear-gradient(145deg, #9bff9e, #8a55d6); color: #1a1028;
+      box-shadow: 0 0 24px rgba(181,140,255,.25); font-size: 21px;
+    }
+    .nav-links { display: flex; gap: 24px; color: var(--muted); font-size: 14px; }
+    .nav-links a:hover { color: var(--green2); }
+    .hero {
+      width: min(1120px, calc(100% - 36px)); margin: auto; min-height: 430px;
+      display: grid; grid-template-columns: 1.2fr .8fr; align-items: center; gap: 30px;
+      padding: 64px 0 50px; position: relative;
+    }
+    .eyebrow {
+      display: inline-flex; align-items: center; gap: 8px; color: var(--green2);
+      background: rgba(181,140,255,.09); border: 1px solid var(--line);
+      border-radius: 999px; padding: 8px 13px; font-size: 12px; font-weight: 800;
+      letter-spacing: .1em; text-transform: uppercase;
+    }
+    h1 { font-size: clamp(42px, 6vw, 70px); line-height: .98; margin: 20px 0 18px; letter-spacing: -.055em; }
+    h1 span { color: var(--green); }
+    .hero p { max-width: 570px; color: var(--muted); font-size: 16px; line-height: 1.75; margin: 0 0 28px; }
+    .actions { display: flex; flex-wrap: wrap; gap: 12px; }
+    .btn {
+      border: 0; border-radius: 12px; padding: 13px 19px; font-weight: 850; cursor: pointer;
+      display: inline-flex; align-items: center; justify-content: center; gap: 9px; transition: .2s ease;
+    }
+    .btn-primary { color: #1a1028; background: linear-gradient(135deg, var(--green2), #a879ef); box-shadow: 0 8px 25px rgba(168,121,239,.2); }
+    .btn-primary:hover { transform: translateY(-3px); box-shadow: 0 12px 30px rgba(168,121,239,.34); }
+    .btn-secondary { color: var(--text); background: rgba(255,255,255,.05); border: 1px solid var(--line); }
+    .btn-secondary:hover { border-color: var(--green); color: var(--green2); }
+    .cube-stage { min-height: 280px; display: grid; place-items: center; position: relative; }
+    .cube {
+      width: 160px; height: 160px; position: relative; transform: rotate(-12deg);
+      background: linear-gradient(135deg, #d4a8ff 0 33%, #9560d8 33% 66%, #58358f 66%);
+      border: 10px solid rgba(30,13,48,.78); border-radius: 22px;
+      box-shadow: 22px 24px 0 rgba(0,0,0,.2), 0 0 70px rgba(181,140,255,.22);
+      animation: cubeFloat 4s ease-in-out infinite;
+    }
+    .cube:before, .cube:after { content:""; position:absolute; background:rgba(32,13,52,.22); }
+    .cube:before { width:100%; height:12px; top:34%; }
+    .cube:after { height:100%; width:12px; left:34%; }
+    .orbit { position:absolute; width:260px; height:260px; border:1px dashed rgba(224,197,255,.25); border-radius:50%; animation: spin 18s linear infinite; }
+    .orbit:before { content:"✦"; color:var(--green2); position:absolute; top:15px; left:38px; font-size:22px; }
+    .float-tag { position:absolute; padding:10px 13px; border-radius:12px; background:#1b2b20; border:1px solid var(--line); color:var(--green2); font-size:12px; font-weight:800; box-shadow:0 12px 25px #0005; }
+    .tag-one { top:25px; right:0; animation: bob 3.4s ease-in-out infinite; }
+    .tag-two { bottom:28px; left:0; animation: bob 4s ease-in-out infinite reverse; }
+    @keyframes cubeFloat { 0%,100% { transform:translateY(0) rotate(-12deg); } 50% { transform:translateY(-17px) rotate(-7deg); } }
+    @keyframes spin { to { transform:rotate(360deg); } }
+    @keyframes bob { 0%,100% { transform:translateY(0); } 50% { transform:translateY(-10px); } }
+    .pixel { position:fixed; width:7px; height:7px; background:var(--green); opacity:.22; pointer-events:none; z-index:-1; animation: drift 12s linear infinite; }
+    .pixel:nth-child(1) { left:8%; top:90%; animation-delay:-2s; }
+    .pixel:nth-child(2) { left:24%; top:100%; animation-delay:-7s; width:4px;height:4px; }
+    .pixel:nth-child(3) { left:75%; top:95%; animation-delay:-4s; }
+    .pixel:nth-child(4) { left:91%; top:100%; animation-delay:-9s; width:5px;height:5px; }
+    @keyframes drift { from { transform:translateY(0) rotate(0); } to { transform:translateY(-115vh) rotate(240deg); } }
+    .section { width:min(1120px, calc(100% - 36px)); margin: 0 auto; padding: 22px 0 70px; }
+    .section-head { display:flex; justify-content:space-between; align-items:end; gap:18px; margin-bottom:22px; }
+    h2 { font-size: clamp(27px, 4vw, 36px); margin:0 0 7px; letter-spacing:-.04em; }
+    .sub { color:var(--muted); margin:0; font-size:14px; }
+    .tabs { display:flex; gap:8px; flex-wrap:wrap; }
+    .tab { background:transparent; border:1px solid var(--line); color:var(--muted); padding:9px 13px; border-radius:10px; cursor:pointer; font-weight:750; }
+    .tab.active, .tab:hover { background:rgba(181,140,255,.12); color:var(--green2); border-color:rgba(181,140,255,.4); }
+    .search-row { display:flex; gap:12px; margin: 0 0 20px; }
+    .search {
+      flex:1; background:var(--panel); border:1px solid var(--line); border-radius:12px;
+      color:var(--text); padding:14px 16px; outline:none; font:inherit;
+    }
+    .search:focus { border-color:var(--green); box-shadow:0 0 0 3px rgba(181,140,255,.08); }
+    .grid { display:grid; grid-template-columns:repeat(3, 1fr); gap:16px; }
+    .card {
+      background:linear-gradient(160deg, rgba(43,29,62,.96), rgba(24,16,36,.98));
+      border:1px solid var(--line); border-radius:17px; overflow:hidden; transition:.25s ease;
+      animation: appear .65s both;
+    }
+    .card:hover { transform:translateY(-6px); border-color:rgba(181,140,255,.5); box-shadow:0 18px 38px #0004; }
+    @keyframes appear { from { opacity:0; transform:translateY(18px); } to { opacity:1; transform:translateY(0); } }
+    .cover {
+      height:150px; display:grid; place-items:center; font-size:54px; position:relative; overflow:hidden;
+      background:linear-gradient(135deg, #67439a, #21142f);
+    }
+    .cover:after { content:""; position:absolute; inset:0; background:linear-gradient(120deg, transparent 25%, #ffffff12 45%, transparent 65%); transform:translateX(-100%); transition:.7s; }
+    .card:hover .cover:after { transform:translateX(100%); }
+    .cover.texture { background:linear-gradient(135deg,#5c7949,#35204e); }
+    .cover.mod { background:linear-gradient(135deg,#564078,#261936); }
+    .cover.other { background:linear-gradient(135deg,#7951a6,#38204d); }
+    .badge { position:absolute; top:12px; left:12px; font-size:10px; letter-spacing:.08em; font-weight:900; background:#0c160edb; color:var(--green2); border:1px solid var(--line); padding:6px 8px; border-radius:7px; }
+    .card-body { padding:17px; }
+    .card h3 { margin:0 0 8px; font-size:18px; }
+    .card p { margin:0; color:var(--muted); line-height:1.55; font-size:13px; min-height:41px; }
+    .meta { display:flex; gap:8px; flex-wrap:wrap; margin:14px 0; }
+    .meta span { color:#b8cbbb; background:rgba(255,255,255,.06); border-radius:7px; padding:5px 8px; font-size:11px; }
+    .download { width:100%; padding:11px; border-radius:10px; border:1px solid rgba(181,140,255,.35); background:rgba(181,140,255,.1); color:var(--green2); font-weight:850; cursor:pointer; transition:.2s; }
+    .download:hover { background:var(--green); color:#1a1028; transform:scale(1.02); }
+    .empty { display:none; color:var(--muted); text-align:center; padding:35px; border:1px dashed var(--line); border-radius:14px; }
+    footer { border-top:1px solid var(--line); color:var(--muted); text-align:center; padding:25px 18px; font-size:12px; }
+
+    .brand-icon { position:relative; overflow:hidden; }
+    .avatar-face { display:grid; place-items:center; width:25px; height:25px; color:#fff;
+      border:2px solid rgba(255,255,255,.75); border-radius:8px 8px 10px 10px;
+      background:linear-gradient(145deg,#d9b5ff,#7742c2); font-size:16px;
+      box-shadow:inset 0 -5px 0 rgba(44,18,78,.28); transform:rotate(-7deg); }
+    .profile-avatar { width:36px;height:36px;display:grid;place-items:center;border-radius:12px;
+      background:linear-gradient(145deg,#d7b4ff,#7543b8);border:1px solid #e0c5ff88;
+      color:white;font-size:21px;box-shadow:0 0 18px #a879ef44; }
+    .login-screen { position:fixed; inset:0; z-index:50; display:grid; place-items:center;
+      padding:20px; background:radial-gradient(circle at 50% 25%,#382052 0,transparent 42%),#100b19; }
+    .login-box { width:min(430px,100%); padding:34px; text-align:center; border-radius:24px;
+      border:1px solid rgba(224,197,255,.22); background:linear-gradient(155deg,#281b3a,#171020);
+      box-shadow:0 30px 100px #0009; animation:appear .55s both; }
+    .login-avatar { width:94px;height:94px;margin:0 auto 18px;display:grid;place-items:center;
+      border-radius:28px;font-size:48px;color:#fff;background:linear-gradient(145deg,#d4a8ff,#7040b1);
+      border:3px solid #e0c5ff88;box-shadow:0 0 45px #a879ef66; transform:rotate(-5deg); }
+    .login-box h2 { margin:0 0 9px; }
+    .login-box p { color:var(--muted);font-size:14px;line-height:1.6;margin:0 0 22px; }
+    .login-input { width:100%;padding:14px 15px;margin-bottom:12px;border-radius:12px;
+      border:1px solid rgba(224,197,255,.2);background:#100b19;color:var(--text);
+      outline:none;font:inherit;text-align:center;letter-spacing:.12em; }
+    .login-input:focus { border-color:var(--green);box-shadow:0 0 0 3px rgba(181,140,255,.12); }
+    .login-submit { width:100%; }
+    .login-error { min-height:20px;margin-top:12px;color:#ff9fae;font-size:12px; }
+    .login-hint { margin-top:14px!important;font-size:11px!important;opacity:.7; }
+    body.locked { overflow:hidden; }
+
+    @media (max-width:800px) { .hero { grid-template-columns:1fr; padding-top:48px; } .cube-stage { min-height:250px; } .grid { grid-template-columns:repeat(2,1fr); } .nav-links { gap:12px; font-size:12px; } }
+    @media (max-width:540px) { .nav { height:62px; } .nav-links a:nth-child(2) { display:none; } .grid { grid-template-columns:1fr; } .section-head { align-items:start; flex-direction:column; } .hero { padding-bottom:25px; } .cube-stage { min-height:230px; } .cube { width:130px;height:130px; } .orbit { width:220px;height:220px; } }
+  </style>
+</head>
+<body class="locked">
+
+  <div class="login-screen" id="loginScreen">
+    <div class="login-box" id="loginForm">
+      <div class="login-avatar">✦</div>
+      <div class="eyebrow">PRIVATE ACCESS</div>
+      <h2 style="margin-top:17px">Добро пожаловать</h2>
+      <p>Введи ключ доступа, чтобы открыть свою коллекцию модов и текстурпаков.</p>
+      <input class="login-input" id="accessKey" type="password" placeholder="ВВЕДИ КЛЮЧ" autocomplete="off" autocapitalize="none" spellcheck="false">
+      <button class="btn btn-primary login-submit" id="loginButton" type="button">Войти в BLOCK HUB ↗</button>
+      <div class="login-error" id="loginError" aria-live="polite"></div>
+      <p class="login-hint">BLOCK HUB · YOUR MINECRAFT COLLECTION</p>
+    </div>
+  </div>
+
+  <div class="pixel"></div><div class="pixel"></div><div class="pixel"></div><div class="pixel"></div>
+  <header class="topbar">
+    <nav class="nav">
+      <a class="brand" href="#"><span class="brand-icon"><span class="avatar-face">✦</span></span><span>BLOCK HUB</span></a>
+      <div class="nav-links"><a href="#catalog">Каталог</a><a href="#about">О проекте</a><a href="#catalog">Скачать</a><div class="profile-avatar" title="Игрок BLOCK HUB"><span>◈</span></div></div>
+    </nav>
+  </header>
+
+  <main>
+    <section class="hero" id="about">
+      <div>
+        <div class="eyebrow">✦ ТВОЯ КОЛЛЕКЦИЯ MINECRAFT</div>
+        <h1>Прокачай свой<br><span>мир.</span></h1>
+        <p>Моды, текстуры и полезные дополнения для Minecraft в одном месте. Выбирай понравившееся, смотри информацию и скачивай.</p>
+        <div class="actions">
+          <a class="btn btn-primary" href="#catalog">Открыть каталог <span>↘</span></a>
+          <a class="btn btn-secondary" href="#catalog">Посмотреть паки</a>
+        </div>
+      </div>
+      <div class="cube-stage" aria-hidden="true">
+        <div class="orbit"></div><div class="cube"></div>
+        <div class="float-tag tag-one">✦ MODS & ADDONS</div>
+        <div class="float-tag tag-two">▧ TEXTURE PACKS</div>
+      </div>
+    </section>
+
+    <section class="section" id="catalog">
+      <div class="section-head">
+        <div><h2>Каталог</h2><p class="sub">Выбирай дополнения для своей игры</p></div>
+        <div class="tabs">
+          <button class="tab active" data-filter="all">Всё</button>
+          <button class="tab" data-filter="texture">Текстуры</button>
+          <button class="tab" data-filter="mod">Моды</button>
+        </div>
+      </div>
+      <div class="search-row">
+        <input class="search" id="search" type="search" placeholder="⌕  Найти мод или текстурпак...">
+      </div>
+      <div class="grid" id="grid">
+        <article class="card" data-type="texture" data-name="пример текстурпак">
+          <div class="cover texture"><span class="badge">ТЕКСТУРПАК</span>🌿</div>
+          <div class="card-body">
+            <h3>Название текстурпака</h3>
+            <p>Добавь сюда короткое описание своего текстурпака и расскажи, чем он отличается.</p>
+            <div class="meta"><span>Minecraft 1.20+</span><span>Bedrock / Java</span></div>
+            <button class="download" data-file="#">Скачать ↓</button>
+          </div>
+        </article>
+        <article class="card" data-type="mod" data-name="пример мод">
+          <div class="cover mod"><span class="badge">МОД</span>⚙️</div>
+          <div class="card-body">
+            <h3>Название мода</h3>
+            <p>Кратко опиши возможности мода, его особенности и что он добавляет в игру.</p>
+            <div class="meta"><span>Minecraft 1.20+</span><span>Forge / Fabric</span></div>
+            <button class="download" data-file="#">Скачать ↓</button>
+          </div>
+        </article>
+        <article class="card" data-type="texture" data-name="пример ресурс пак">
+          <div class="cover texture"><span class="badge">ТЕКСТУРПАК</span>🧱</div>
+          <div class="card-body">
+            <h3>Ещё один пак</h3>
+            <p>Здесь будет описание ещё одного пака. Карточки можно копировать и добавлять сколько угодно.</p>
+            <div class="meta"><span>Minecraft 1.21+</span><span>Bedrock</span></div>
+            <button class="download" data-file="#">Скачать ↓</button>
+          </div>
+        </article>
+      </div>
+      <div class="empty" id="empty">Ничего не найдено. Попробуй изменить запрос.</div>
+    </section>
+  </main>
+  <footer>BLOCK HUB · Фанатский каталог дополнений Minecraft</footer>
+
+  <script>
+
+    // Авторизация: работает и по кнопке, и по клавише Enter.
+    const ACCESS_KEY = 'demofree';
+    const loginScreen = document.getElementById('loginScreen');
+    const accessInput = document.getElementById('accessKey');
+    const loginError = document.getElementById('loginError');
+    const loginButton = document.getElementById('loginButton');
+
+    function unlockHub() {
+      const entered = accessInput.value.toLowerCase().replace(/\\s+/g, '');
+      if (entered === ACCESS_KEY) {
+        loginError.textContent = '';
+        loginButton.disabled = true;
+        loginScreen.style.opacity = '0';
+        loginScreen.style.transition = 'opacity .35s ease';
+        document.body.classList.remove('locked');
+        window.setTimeout(() => {
+          loginScreen.hidden = true;
+          loginScreen.style.display = 'none';
+        }, 360);
+      } else {
+        loginError.textContent = 'Неверный ключ. Введи: demofree';
+        accessInput.value = '';
+        accessInput.focus();
+      }
+    }
+
+    // Не даём браузеру отправить форму обычным способом и перезагрузить страницу.
+    document.addEventListener('submit', (event) => {
+      if (event.target && event.target.closest('#loginScreen')) {
+        event.preventDefault();
+        unlockHub();
+      }
+    });
+    loginButton.addEventListener('click', (event) => {
+      event.preventDefault();
+      unlockHub();
+    });
+    accessInput.addEventListener('keydown', (event) => {
+      if (event.key === 'Enter') {
+        event.preventDefault();
+        unlockHub();
+      }
+    });
+
+    const tabs = document.querySelectorAll('.tab');
+    const cards = [...document.querySelectorAll('.card')];
+    const search = document.getElementById('search');
+    const empty = document.getElementById('empty');
+    let activeFilter = 'all';
+
+    function filterCards() {
+      const query = search.value.trim().toLowerCase();
+      let visible = 0;
+      cards.forEach(card => {
+        const matchesType = activeFilter === 'all' || card.dataset.type === activeFilter;
+        const matchesText = (card.dataset.name + ' ' + card.innerText).toLowerCase().includes(query);
+        card.style.display = matchesType && matchesText ? '' : 'none';
+        if (matchesType && matchesText) visible++;
+      });
+      empty.style.display = visible ? 'none' : 'block';
+    }
+    tabs.forEach(tab => tab.addEventListener('click', () => {
+      tabs.forEach(item => item.classList.remove('active'));
+      tab.classList.add('active');
+      activeFilter = tab.dataset.filter;
+      filterCards();
+    }));
+    search.addEventListener('input', filterCards);
+
+    // У каждой кнопки скачивания должен быть указан прямой адрес файла.
+    document.querySelectorAll('.download').forEach(button => {
+      button.addEventListener('click', () => {
+        const file = button.dataset.file;
+        if (!file || file === '#') {
+          alert('Сначала добавь ссылку на файл в атрибут data-file этой кнопки.');
+          return;
+        }
+        window.location.href = file;
+      });
+    });
+  </script>
+</body>
+</html>
